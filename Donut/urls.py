@@ -27,8 +27,8 @@ admin.site.urls),
 views.DonutListView.as_view()),
 #     path('cart/',
 # views.),
-#     path('donut/<ink:pk>',
-# views.)
+    path('donut/<int:pk>',
+views.DonutDetailView.as_view())
 #     path('payment',
 # views.)
 ]
