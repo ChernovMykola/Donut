@@ -5,9 +5,11 @@ from django.views.generic import(
     TemplateView,
 )
 from donut_app.models import Donut
+from django.core.paginator import Paginator
 
 class DonutListView(ListView):
     model = Donut
+    paginate_by = 5
     template_name = 'donut/home.html'
     context_object_name = 'donut'
 
