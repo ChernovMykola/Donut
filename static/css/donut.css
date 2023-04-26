@@ -1,0 +1,33 @@
+nav.list-pages {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+nav.list-pages ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+nav.list-pages li {
+    padding: 5px 10px;
+    background-color: #eee;
+    border-radius: 5px;
+}
+
+nav.list-pages li.active a {
+    background-color: #007bff;
+    color: #fff;
+}
+
+nav.list-pages li a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+nav.list-pages li a:hover {
+    text-decoration: underline;
+}
