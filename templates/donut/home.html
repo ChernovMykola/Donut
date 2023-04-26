@@ -1,19 +1,19 @@
 {% extends 'donut/base.html' %}
 {% block content %}
-{% for donut in donut %}
+{% for d in donut %}
     <div class="product-card">
         <div>
-            <img class="donut_picture" src="{{ donut.picture.url }}" />
+            <img class="donut_picture" src="{{ d.picture.url }}" />
         </div>
-        <h3>{{ donut.title }}</h3>
-        <p>{{ donut.description }}</p>
+        <h3><a href="{% url 'donut:donut_detail' pk=d.pk %}">{{ d.title }}</a></h3>
+        <p>{{ d.description }}</p>
         <div>
-            <p>{{ donut.price }}</p>
-            <p>{{ donut.count }}</p>
+            <p>{{ d.price }}</p>
+            <p>{{ d.count }}</p>
         </div>
-        {% if donut.labels %}
+        {% if d.labels %}
             <div>
-                {{ donut.labels }}
+                {{ d.labels }}
             </div>
         {% endif %}
         <button type="submit">Add to my cart</button>

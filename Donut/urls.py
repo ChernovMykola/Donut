@@ -14,23 +14,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import (
-    path,
-    include
-)
-from donut_app import views
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/',
 admin.site.urls),
     path('',
-views.DonutListView.as_view()),
-#     path('cart/',
-# views.),
-    path('donut/<int:pk>',
-views.DonutDetailView.as_view()),
-#     path('payment/ ',
-# views.),
+include('donut_app.urls', namespace='donut')),
+    # Other app URLs go here
     path('api/',
-include('donut_app.urls')),
+include('donut_app.urls', namespace='donut_api')),
 ]

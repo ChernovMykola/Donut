@@ -1,4 +1,21 @@
 {% extends 'donut/base.html' %}
 {% block content %}
+    <div class="product-card">
+        <div>
+            <img class="donut_picture" src="{{ donut.picture.url }}" />
+        </div>
+        <h3>{{ donut.title }}</h3>
+        <p>{{ donut.description }}</p>
+        <div>
+            <p>{{ donut.price }}</p>
+            <p>{{ donut.count }}</p>
+        </div>
+        {% if donut.labels %}
+            <div>
+                {{ donut.labels }}
+            </div>
+        {% endif %}
+        <button type="submit">Add to my cart</button>
+    </div>
 
 {% endblock %}
