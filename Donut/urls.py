@@ -28,7 +28,9 @@ views.DonutListView.as_view()),
 #     path('cart/',
 # views.),
     path('donut/<int:pk>',
-views.DonutDetailView.as_view())
-#     path('payment',
-# views.)
+views.DonutDetailView.as_view()),
+#     path('payment/ ',
+# views.),
+    path('api/',
+include('donut_app.urls')),
 ]

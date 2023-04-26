@@ -24,3 +24,16 @@ class Donut(models.Model):
     def get_absolute_url(self):
         return reverse("donut:donut:detail", kwargs={'pk': self.pk})
 
+
+class Order(models.Model):
+    customer_name = models.CharField(max_length=100)
+    customer_email = models.CharField(max_length=100)
+    customer_adress = models.CharField(max_length=100)
+    donut_name = models.OneToOneField('Donut', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.customer_name
+
+    def get_absolute_url(self):
+        return reverse("order:order:detail", kwargs={'pk': self.pk})
+
