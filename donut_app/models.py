@@ -28,14 +28,27 @@ class Donut(models.Model):
 class Order(models.Model):
     customer_name = models.CharField(max_length=100)
     customer_email = models.CharField(max_length=100)
-    customer_adress = models.CharField(max_length=100)
-    donut_name = models.OneToOneField('Donut', on_delete=models.CASCADE)
+    customer_address = models.CharField(max_length=100)
+    items = models.ManyToManyField(Donut, through='OrderItem')
+    total_price = models.DecimalField(max_digits=6, decimal_places=2, default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.customer_name
+        return f"Order #{self.pk}"
 
     def get_absolute_url(self):
         return reverse("order:order:detail", kwargs={'pk': self.pk})
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey('Order', on_delete=models.CASCADE)
+    donut = models.ForeignKey('Donut', on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.quantity} x {self.donut.name} for order #{self.order.pk}"
+
 
 
 
