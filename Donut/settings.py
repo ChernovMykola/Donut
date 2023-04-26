@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'donut_app',
     'rest_framework',
+    'cart_app',
 ]
 
 MIDDLEWARE = [
