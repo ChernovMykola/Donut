@@ -15,6 +15,11 @@ from django.views.generic.detail import SingleObjectMixin
 from .models import Donut
 from django.contrib import messages
 from cart_app.cart import Cart
+from django.http import HttpResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+
 
 class DonutListView(ListView):
     model = Donut
@@ -41,7 +46,7 @@ class AddToCartView(SingleObjectMixin, View):
         if cart_item is None:
             cart.add(donut)
         else:
-            if donut.count > 0 :
+            if donut.count > 0:
                 donut.count -= 1
                 donut.save()
                 cart_item['quantity'] += 1
@@ -49,6 +54,27 @@ class AddToCartView(SingleObjectMixin, View):
             else:
                 messages.error(request, 'This donut is ended, please, take some other!')
         return redirect(reverse('donut:donut_list'))
+
+@method_decorator(csrf_exempt, name='dispatch')
+class RemoveFromCartView(SingleObjectMixin, View):
+    model = Donut
+
+    def post(self, request, *args, **kwargs):
+        if request.method == 'POST':
+            donut = self.get_object()
+            cart = Cart(request)
+            cart_item = cart.get(donut.id)
+            if cart_item is not None:
+                if cart_item['quantity'] > 1:
+                    cart_item['quantity'] -= 1
+                    cart.save()
+                else:
+                    cart.remove(donut)
+                donut.count += 1
+                donut.save()
+            else:
+                messages.error(request, 'Add donut to your cart!')
+            return redirect(reverse('donut:cart'))
 
 def view_cart(request):
     cart = Cart(request)
