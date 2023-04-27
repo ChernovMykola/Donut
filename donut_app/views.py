@@ -1,4 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import (
+    render,
+    redirect
+)
 from django.views.generic import(
     ListView,
     DetailView,
@@ -6,6 +9,11 @@ from django.views.generic import(
 )
 from donut_app.models import Donut
 from django.core.paginator import Paginator
+from django.urls import reverse
+from django.views import View
+from django.views.generic.detail import SingleObjectMixin
+from .models import Donut
+from cart_app.cart import Cart
 
 class DonutListView(ListView):
     model = Donut
@@ -20,3 +28,25 @@ class DonutDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
+
+
+class AddToCartView(SingleObjectMixin, View):
+    model = Donut
+
+    def post(self, request, *args, **kwargs):
+        donut = self.get_object()
+        cart = Cart(request)
+        cart_item = cart.get(donut.id)
+        if cart_item is None:
+            cart.add(donut)
+        else:
+            cart_item['quantity'] += 1
+            cart.save()
+        return redirect(reverse('donut:donut_list'))
+
+def view_cart(request):
+    cart = Cart(request)
+    context = {
+        'cart': cart
+    }
+    return render(request, 'donut/cart.html', context)
