@@ -13,6 +13,7 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic.detail import SingleObjectMixin
 from .models import Donut
+from django.contrib import messages
 from cart_app.cart import Cart
 
 class DonutListView(ListView):
@@ -40,8 +41,13 @@ class AddToCartView(SingleObjectMixin, View):
         if cart_item is None:
             cart.add(donut)
         else:
-            cart_item['quantity'] += 1
-            cart.save()
+            if donut.count > 0 :
+                donut.count -= 1
+                donut.save()
+                cart_item['quantity'] += 1
+                cart.save()
+            else:
+                messages.error(request, 'This donut is ended, please, take some other!')
         return redirect(reverse('donut:donut_list'))
 
 def view_cart(request):

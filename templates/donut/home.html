@@ -1,5 +1,7 @@
 {% extends 'donut/base.html' %}
 {% block content %}
+{% load static %}
+
 {% for d in donut %}
     <div class="product-card">
         <div>
@@ -21,9 +23,22 @@
           <input type="hidden" name="donut_id" value="{{ d.id }}">
           <button type="submit">Add to cart</button>
         </form>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">
+                        {{ message|safe }}
+                        <a href="donut:home" class="close">✖</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
     </div>
-
+{% block javascript %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+{% endblock %}
 
 {% endfor %}
 {% endblock %}
