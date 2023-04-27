@@ -1,4 +1,33 @@
 {% extends 'donut/base.html' %}
 {% block content %}
-
+     <h1>Shopping Cart</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart %}
+                <tr>
+                    <td>{{ item.donut.name }}</td>
+                    <td>{{ item.price }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.total_price }}</td>
+                    <td>
+{#                        <a href="{% url 'donut:remove_from_cart' item.donut.id %}">Remove</a>#}
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="3">Total</td>
+                <td>{{ cart.get_total_price }}</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
 {% endblock %}
