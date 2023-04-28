@@ -22,16 +22,10 @@
         </div>
     </nav>
 
-    <div class="content container">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="blog_posts ">
-                    {% block content %}
-                    {% endblock  %}
-                </div>
-            </div>
-        </div>
-    </div>
+
+    {% block content %}
+    {% endblock  %}
+
     <nav class="list-pages">
         <ul>
             {% for p in paginator.page_range %}

@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 from cart_app import cart
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = 'donut'
 
@@ -15,5 +17,4 @@ views.view_cart, name='cart'),
 views.AddToCartView.as_view(), name='add_to_cart'),
     path('remove_from_cart/<int:pk>/',
 views.RemoveFromCartView.as_view(), name='remove_from_cart')
-
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,44 +1,49 @@
 {% extends 'donut/base.html' %}
 {% block content %}
 {% load static %}
+<div class="container">
+    <div class="row">
+        {% for d in donut %}
+            <div class="col-md-4">
+                <div class="product-card">
+                    <div>
+                        <img class="donut_picture" src="{{ d.picture.url }}" />
+                    </div>
+                    <h3><a href="{% url 'donut:donut_detail' pk=d.pk %}">{{ d.title }}</a></h3>
+                    <p>{{ d.description }}</p>
+                    <div>
+                        <p>{{ d.price }}</p>
+                        <p>{{ d.count }}</p>
+                    </div>
+                    {% if d.labels %}
+                        <div>
+                            {{ d.labels }}
+                        </div>
+                    {% endif %}
+                    <form action="{% url 'donut:add_to_cart' d.id %}" method="POST">
+                      {% csrf_token %}
+                      <input type="hidden" name="donut_id" value="{{ d.id }}">
+                      <button type="submit">Add to cart</button>
+                    </form>
+                    {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                                <li class="{{ message.tags }}">
+                                    {{ message|safe }}
+                                    <a href="donut:home" class="close">✖</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
 
-{% for d in donut %}
-    <div class="product-card">
-        <div>
-            <img class="donut_picture" src="{{ d.picture.url }}" />
-        </div>
-        <h3><a href="{% url 'donut:donut_detail' pk=d.pk %}">{{ d.title }}</a></h3>
-        <p>{{ d.description }}</p>
-        <div>
-            <p>{{ d.price }}</p>
-            <p>{{ d.count }}</p>
-        </div>
-        {% if d.labels %}
-            <div>
-                {{ d.labels }}
+                </div>
+            {% block javascript %}
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                <script src="{% static 'js/script.js' %}"></script>
+            {% endblock %}
             </div>
-        {% endif %}
-        <form action="{% url 'donut:add_to_cart' d.id %}" method="POST">
-          {% csrf_token %}
-          <input type="hidden" name="donut_id" value="{{ d.id }}">
-          <button type="submit">Add to cart</button>
-        </form>
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li class="{{ message.tags }}">
-                        {{ message|safe }}
-                        <a href="donut:home" class="close">✖</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-
+        {% endfor %}
     </div>
-{% block javascript %}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{% static 'js/script.js' %}"></script>
-{% endblock %}
+</div>
 
-{% endfor %}
 {% endblock %}

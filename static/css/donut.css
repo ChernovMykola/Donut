@@ -32,3 +32,12 @@ nav.list-pages li a:hover {
     text-decoration: underline;
 }
 
+.product-card{
+    margin: 10px;
+}
+
+.donut_picture{
+    height: 10em;
+    width: 10em;
+    margin: 1em;
+}

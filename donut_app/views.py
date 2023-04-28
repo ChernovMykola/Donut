@@ -21,7 +21,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 class DonutListView(ListView):
     model = Donut
-    paginate_by = 5
+    paginate_by = 6
     template_name = 'donut/home.html'
     context_object_name = 'donut'
     def get_queryset(self):
