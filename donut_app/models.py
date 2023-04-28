@@ -7,7 +7,7 @@ class Donut(models.Model):
         ('VE', 'Vegan'),
     )
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=200)
     picture = models.ImageField(upload_to='donut_pictures')
     title = models.CharField(max_length=200)
     description = models.TextField()
