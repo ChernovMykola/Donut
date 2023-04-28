@@ -15,10 +15,8 @@ from django.views.generic.detail import SingleObjectMixin
 from .models import Donut
 from django.contrib import messages
 from cart_app.cart import Cart
-from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
 
 
 class DonutListView(ListView):
@@ -26,6 +24,9 @@ class DonutListView(ListView):
     paginate_by = 5
     template_name = 'donut/home.html'
     context_object_name = 'donut'
+    def get_queryset(self):
+        donut = Donut.objects.all().order_by('id')
+        return donut
 
 class DonutDetailView(DetailView):
     model = Donut
@@ -34,6 +35,7 @@ class DonutDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
+
 
 
 class AddToCartView(SingleObjectMixin, View):
