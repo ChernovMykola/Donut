@@ -3,6 +3,16 @@
 {% load static %}
 <div class="container">
     <div class="row">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">
+                        {{ message|safe }}
+                        <a href="donut:home" class="close">✖</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         {% for d in donut %}
             <div class="col-md-4">
                 <div class="product-card">
@@ -25,16 +35,7 @@
                       <input type="hidden" name="donut_id" value="{{ d.id }}">
                       <button type="submit">Add to cart</button>
                     </form>
-                    {% if messages %}
-                        <ul class="messages">
-                            {% for message in messages %}
-                                <li class="{{ message.tags }}">
-                                    {{ message|safe }}
-                                    <a href="donut:home" class="close">✖</a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
+
 
                 </div>
             {% block javascript %}

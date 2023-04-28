@@ -57,7 +57,7 @@ class AddToCartView(SingleObjectMixin, View):
                 cart.save()
             else:
                 messages.error(request, 'This donut is ended, please, take some other!')
-        return redirect(reverse('donut:donut_list'))
+        return redirect(request.META.get('HTTP_REFERER', 'donut:donut_list'))
 
 @method_decorator(csrf_exempt, name='dispatch')
 class RemoveFromCartView(SingleObjectMixin, View):

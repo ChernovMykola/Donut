@@ -41,3 +41,11 @@ nav.list-pages li a:hover {
     width: 10em;
     margin: 1em;
 }
+.massages{
+
+}
+
+.error{
+    display: flex;
+    justify-content: center;
+}

@@ -1,5 +1,6 @@
 {% extends 'donut/base.html' %}
 {% block content %}
+{% load static %}
     <div class="product-card-detail">
         <div>
             <img class="donut_picture" src="{{ donut.picture.url }}" />
@@ -20,6 +21,20 @@
           <input type="hidden" name="donut_id" value="{{ d.id }}">
           <button type="submit">Add to cart</button>
         </form>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">
+                        {{ message|safe }}
+                        <a href="donut:donut_detail" class="close">✖</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% block javascript %}
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script src="{% static 'js/script.js' %}"></script>
+        {% endblock %}
     </div>
 
 {% endblock %}
