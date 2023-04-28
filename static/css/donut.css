@@ -49,3 +49,7 @@ nav.list-pages li a:hover {
     display: flex;
     justify-content: center;
 }
+.paginator{
+    display: flex;
+    justify-content: center;
+}

@@ -28,6 +28,10 @@ class DonutListView(ListView):
         donut = Donut.objects.all().order_by('id')
         return donut
 
+
+
+
+
 class DonutDetailView(DetailView):
     model = Donut
     template_name = 'donut/donut_detail.html'
