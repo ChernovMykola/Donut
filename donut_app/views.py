@@ -38,6 +38,7 @@ class DonutDetailView(DetailView):
 
 class AddToCartView(SingleObjectMixin, View):
     model = Donut
+    donut_test = 10
 
     def post(self, request, *args, **kwargs):
         donut = self.get_object()
@@ -45,8 +46,10 @@ class AddToCartView(SingleObjectMixin, View):
         cart_item = cart.get(donut.id)
         if cart_item is None:
             cart.add(donut)
+            donut.count -= 1
+            donut.save()
         else:
-            if donut.count > 0:
+            if donut.count != 0:
                 donut.count -= 1
                 donut.save()
                 cart_item['quantity'] += 1
