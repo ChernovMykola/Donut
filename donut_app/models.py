@@ -7,14 +7,14 @@ class Donut(models.Model):
         ('VE', 'Vegan'),
     )
 
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=400, default='New Donut')
     picture = models.ImageField(upload_to='donut_pictures')
-    title = models.CharField(max_length=200)
-    description = models.TextField()
+    title = models.CharField(max_length=200, default='New Donut')
+    description = models.TextField(max_length=400)
     stars = models.IntegerField()
     labels = models.CharField(choices=DONUT_LABEL_CHOICES, max_length=2)
-    ingredients = models.TextField()
-    allergens = models.TextField()
+    ingredients = models.TextField(max_length=400)
+    allergens = models.TextField(max_length=400)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     count = models.IntegerField()
 

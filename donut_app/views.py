@@ -38,7 +38,6 @@ class DonutDetailView(DetailView):
 
 class AddToCartView(SingleObjectMixin, View):
     model = Donut
-    donut_test = 10
 
     def post(self, request, *args, **kwargs):
         donut = self.get_object()
