@@ -16,14 +16,14 @@
         {% for d in donut %}
             <div class="col-md-4">
                 <div class="product-card">
-                    <div>
-                        <img class="donut_picture" src="{{ d.picture.url }}" />
+                    <div class="donut_picture">
+                        <img class="donut_picture pic" src="{{ d.picture.url }}" />
                     </div>
                     <h3 class="product-card in"><a href="{% url 'donut:donut_detail' pk=d.pk %}">{{ d.title }}</a></h3>
                     <p class="product-card in">{{ d.description }}</p>
                     <div class="product-card num">
                         <p>{{ d.price }}</p>
-                        <p>{{ d.count }}</p>
+                        <p class="donut-count">{{ d.count }}</p>
                     </div>
                     {% if d.labels %}
                         <div>

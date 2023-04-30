@@ -37,6 +37,11 @@ nav.list-pages li a:hover {
 }
 
 .donut_picture{
+    display: flex;
+    justify-content: center;
+}
+
+.donut_picture pic{
     height: 10em;
     width: 10em;
     margin: 1em;
@@ -62,4 +67,9 @@ nav.list-pages li a:hover {
 .product-card num{
     display: flex;
     justify-content: center;
+}
+
+p donut-count{
+    position: relative;
+    right: 50%;
 }
