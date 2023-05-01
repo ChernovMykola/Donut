@@ -16,5 +16,7 @@ views.view_cart, name='cart'),
     path('add_to_cart/<int:pk>/',
 views.AddToCartView.as_view(), name='add_to_cart'),
     path('remove_from_cart/<int:pk>/',
-views.RemoveFromCartView.as_view(), name='remove_from_cart')
+views.RemoveFromCartView.as_view(), name='remove_from_cart'),
+    path('charge/',
+cart.charge, name='charge')
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

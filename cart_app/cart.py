@@ -1,7 +1,8 @@
 from decimal import Decimal
+from donut_app.models import Donut, Order
 from django.conf import settings
-from donut_app.models import Donut
-
+from django.shortcuts import render
+import stripe
 
 class Cart:
     def __init__(self, request):
@@ -41,6 +42,12 @@ class Cart:
         self.session[settings.CART_SESSION_ID] = {}
         self.session.modified = True
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['key'] = settings.STRIPE_PUBLISHABLE_KEY
+        return context
+
+
     def __iter__(self):
         donut_ids = self.cart.keys()
         donuts = Donut.objects.filter(id__in=donut_ids)
@@ -54,3 +61,14 @@ class Cart:
 
     def __len__(self):
         return sum(item['quantity'] for item in self.cart.values())
+
+
+def charge(request):
+    if request.method == 'POST':
+        charge = stripe.Charge.create(
+            amount=Order.total_price,
+            currently='usd',
+            description='Payment Gateway',
+            source=request.POST['stripeToken']
+        )
+    return render(request, 'charge.html')
