@@ -17,7 +17,7 @@
             <div class="col-md-4">
                 <div class="product-card">
                     <div class="donut_picture">
-                        <img class="donut_picture pic" src="{{ d.picture.url }}" />
+                        <img class="donut_picture" src="{{ d.picture.url }}" />
                     </div>
                     <h3 class="product-card in"><a href="{% url 'donut:donut_detail' pk=d.pk %}">{{ d.title }}</a></h3>
                     <p class="product-card in">{{ d.description }}</p>

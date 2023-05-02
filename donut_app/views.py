@@ -85,9 +85,17 @@ class RemoveFromCartView(SingleObjectMixin, View):
                 messages.error(request, 'Add donut to your cart!')
             return redirect(reverse('donut:cart'))
 
+# def view_cart(request):
+#     cart = Cart(request)
+#     context = {
+#         'cart': cart
+#     }
+#     return render(request, 'donut/cart.html', context)
+
 def view_cart(request):
     cart = Cart(request)
     context = {
+        'cart':cart,
         'key':settings.STRIPE_PUBLISHABLE_KEY,
         'total_price': cart.get_total_price(),
     }
