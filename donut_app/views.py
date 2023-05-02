@@ -17,6 +17,7 @@ from django.contrib import messages
 from cart_app.cart import Cart
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 
 
 class DonutListView(ListView):
@@ -87,6 +88,7 @@ class RemoveFromCartView(SingleObjectMixin, View):
 def view_cart(request):
     cart = Cart(request)
     context = {
-        'cart': cart
+        'key':settings.STRIPE_PUBLISHABLE_KEY,
+        'total_price': cart.get_total_price(),
     }
     return render(request, 'donut/cart.html', context)

@@ -30,13 +30,15 @@
                 {% csrf_token %}
                 <h2>I want to buy my donuts!</h2>
                 <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                    data-key = "{{ key }}"
-                    data-description = "Payment Gateway"
-                    data-amount = {{ Order.total_price }}
+                    data-key="{{ key }}"
+                    data-description="Payment Gateway"
+                    data-amount="{{ total_price|floatformat:2 }}"
                     data-local="auto"
                 >
                 </script>
             </form>
+
+
             <tr>
                 <td colspan="3">Total</td>
                 <td>{{ cart.get_total_price }}</td>

@@ -4,6 +4,7 @@ from django.conf import settings
 from django.shortcuts import render
 import stripe
 
+stripe.api_key = settings.STRIPE_SECRET_KEY
 class Cart:
     def __init__(self, request):
         self.session = request.session
@@ -42,11 +43,12 @@ class Cart:
         self.session[settings.CART_SESSION_ID] = {}
         self.session.modified = True
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get_context_data(self):
+        context = {}
         context['key'] = settings.STRIPE_PUBLISHABLE_KEY
+        cart = Cart(self.request)
+        context['total_price'] = cart.get_total_price()
         return context
-
 
     def __iter__(self):
         donut_ids = self.cart.keys()
@@ -65,10 +67,15 @@ class Cart:
 
 def charge(request):
     if request.method == 'POST':
-        charge = stripe.Charge.create(
-            amount=Order.total_price,
-            currently='usd',
-            description='Payment Gateway',
-            source=request.POST['stripeToken']
-        )
+        stripe_token = request.POST['stripeToken']
+        amount = Cart(request).get_total_price()
+        try:
+            charge = stripe.Charge.create(
+                amount=int(amount * 100),
+                currency='usd',
+                description='Payment Gateway',
+                source=stripe_token
+            )
+        except stripe.error.CardError as e:
+            pass
     return render(request, 'charge.html')
