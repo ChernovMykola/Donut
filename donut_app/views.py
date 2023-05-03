@@ -94,6 +94,9 @@ class RemoveFromCartView(SingleObjectMixin, View):
 
 def view_cart(request):
     cart = Cart(request)
+    print("Cart contents:", cart.cart)
+    cart.clear()
+    print("Cart contents after clearing:", cart.cart)
     context = {
         'cart':cart,
         'key':settings.STRIPE_PUBLISHABLE_KEY,

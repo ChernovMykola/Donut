@@ -69,6 +69,7 @@ def charge(request):
     if request.method == 'POST':
         stripe_token = request.POST['stripeToken']
         amount = Cart(request).get_total_price()
+        stripe.api_version = "2022-08-01"
         try:
             charge = stripe.Charge.create(
                 amount=int(amount * 100),
@@ -78,4 +79,6 @@ def charge(request):
             )
         except stripe.error.CardError as e:
             pass
-    return render(request, 'charge.html')
+    Cart.clear()
+    Cart.save()
+    return render(request, 'home.html')
