@@ -97,6 +97,6 @@ def view_cart(request):
     context = {
         'cart':cart,
         'key':settings.STRIPE_PUBLISHABLE_KEY,
-        'total_price': cart.get_total_price(),
+        'total_price': cart.get_total_price()*100,
     }
     return render(request, 'donut/cart.html', context)
