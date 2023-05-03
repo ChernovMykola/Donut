@@ -11,9 +11,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         faker = Faker()
-        pictures_dir = os.path.join(settings.MEDIA_DIR, 'donut_pictures')
+        pictures_dir = os.path.join(settings.MEDIA_DIR)
         picture_files = os.listdir(pictures_dir)
-        picture_files = random.sample(picture_files, 20)
+        picture_files = random.sample(picture_files, 6)
         donut_names = [
             'Glazed',
             'Chocolate Sprinkles',
