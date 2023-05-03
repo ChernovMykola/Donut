@@ -13,7 +13,7 @@ class Command(BaseCommand):
         faker = Faker()
         pictures_dir = os.path.join(settings.MEDIA_DIR)
         picture_files = os.listdir(pictures_dir)
-        picture_files = random.sample(picture_files, 6)
+        picture_files = random.sample(picture_files, 19)
         donut_names = [
             'Glazed',
             'Chocolate Sprinkles',
@@ -61,7 +61,7 @@ class Command(BaseCommand):
         ]
 
         # Define a list of donut labels
-        donut_labels = ['GF', 'VE']
+        donut_labels = ['GF', 'VE', 'BS']
 
         # Define a list of ingredients
         ingredients = ['flour', 'sugar', 'butter', 'milk', 'eggs']

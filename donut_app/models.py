@@ -4,7 +4,7 @@ from django.urls import reverse
 class Donut(models.Model):
     DONUT_LABEL_CHOICES = (
         ('GF', 'Gluten-Free'),
-        ('VE', 'Vegan'),
+        ('BS', 'Basic')
     )
 
     name = models.CharField(max_length=400, default='New Donut')
