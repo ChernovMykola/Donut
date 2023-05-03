@@ -28,7 +28,11 @@
             {% endfor %}
             <div class="popup-bg">
                 <div class="popup">
-
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="save btn btn-default" >Save</button>
+                    </form>
                     <form action="{% url 'donut:cart' %}" method="post">
                         {% csrf_token %}
                         <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"

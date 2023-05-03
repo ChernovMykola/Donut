@@ -109,5 +109,9 @@ def view_cart(request):
 class CreateOrderView(CreateView):
     model = Order
     form_class = OrderCreate
+    redirect_field_name = 'donut_app/cart'
+
+    def form_valid(self, form):
+        return super().form_valid(form)
 
 
