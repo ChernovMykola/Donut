@@ -61,7 +61,7 @@ class Command(BaseCommand):
         ]
 
         # Define a list of donut labels
-        donut_labels = ['GF', 'VE', 'BS']
+        donut_labels = ['GF', 'BS']
 
         # Define a list of ingredients
         ingredients = ['flour', 'sugar', 'butter', 'milk', 'eggs']

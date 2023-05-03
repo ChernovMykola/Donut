@@ -26,17 +26,21 @@
                     </td>
                 </tr>
             {% endfor %}
-            <form action="{% url 'donut:cart' %}" method="post">
-                {% csrf_token %}
-                <h2>I want to buy my donuts!</h2>
-                <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                    data-key="{{ key }}"
-                    data-description="Payment Gateway"
-                    data-amount="{{ total_price }}"
-                    data-local="auto"
-                >
-                </script>
-            </form>
+            <div class="popup-bg">
+                <div class="popup">
+
+                    <form action="{% url 'donut:cart' %}" method="post">
+                        {% csrf_token %}
+                        <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                            data-key="{{ key }}"
+                            data-description="Payment Gateway"
+                            data-amount="{{ total_price }}"
+                            data-local="auto"
+                        >
+                        </script>
+                    </form>
+                </div>
+            </div>
 
 
             <tr>
