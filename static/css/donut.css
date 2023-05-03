@@ -4,6 +4,10 @@ nav.list-pages {
     margin-top: 20px;
 }
 
+html{
+    color: #007bff;
+}
+
 nav.list-pages ul {
     list-style: none;
     display: flex;
