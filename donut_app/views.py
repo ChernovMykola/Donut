@@ -6,13 +6,20 @@ from django.views.generic import(
     ListView,
     DetailView,
     TemplateView,
+    CreateView,
+
 )
 from donut_app.models import Donut
 from django.core.paginator import Paginator
 from django.urls import reverse
 from django.views import View
 from django.views.generic.detail import SingleObjectMixin
-from .models import Donut
+from .models import (
+    Donut,
+    Order,
+    OrderItem
+)
+from .forms import OrderCreate
 from django.contrib import messages
 from cart_app.cart import Cart
 from django.utils.decorators import method_decorator
@@ -85,12 +92,6 @@ class RemoveFromCartView(SingleObjectMixin, View):
                 messages.error(request, 'Add donut to your cart!')
             return redirect(reverse('donut:cart'))
 
-# def view_cart(request):
-#     cart = Cart(request)
-#     context = {
-#         'cart': cart
-#     }
-#     return render(request, 'donut/cart.html', context)
 
 def view_cart(request):
     cart = Cart(request)
@@ -103,3 +104,10 @@ def view_cart(request):
         'total_price': cart.get_total_price()*100,
     }
     return render(request, 'donut/cart.html', context)
+
+
+class CreateOrderView(CreateView):
+    model = Order
+    form_class = OrderCreate
+
+
