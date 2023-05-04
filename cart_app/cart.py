@@ -1,8 +1,16 @@
 from decimal import Decimal
-from donut_app.models import Donut, Order
+from donut_app.models import (
+    Donut,
+    Order,
+)
+from donut_app.forms import OrderCreate
 from django.conf import settings
 from django.shortcuts import render
+from django.views.generic import (
+    CreateView
+)
 import stripe
+
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 class Cart:
@@ -82,3 +90,19 @@ def charge(request):
     Cart.clear()
     Cart.save()
     return render(request, 'home.html')
+
+class CreateOrderView(CreateView):
+    model = Order
+    form_class = OrderCreate
+    redirect_field_name = 'donut_app/donut_list'
+    template_name = 'donut/cart.html'
+
+    # def total_price(self):
+    #     total_price = Cart.get_total_price(self)
+    #     return total_price
+
+    def form_valid(self, form):
+        cart = Cart(self.request)
+        cart.clear()
+        order = form.save()
+        return super().form_valid(form)

@@ -21,6 +21,8 @@ urlpatterns = [
 admin.site.urls),
     path('',
 include('donut_app.urls', namespace='donut')),
+    path('',
+include('cart_app.urls', namespace='cart')),
     path('api/',
 include('donut_app.urls', namespace='donut_api')),
 ]

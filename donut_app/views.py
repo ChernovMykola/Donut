@@ -25,7 +25,7 @@ from cart_app.cart import Cart
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-
+from cart_app import cart
 
 class DonutListView(ListView):
     model = Donut
@@ -57,18 +57,18 @@ class AddToCartView(SingleObjectMixin, View):
         donut = self.get_object()
         cart = Cart(request)
         cart_item = cart.get(donut.id)
-        if cart_item is None:
-            cart.add(donut)
-            donut.count -= 1
-            donut.save()
-        else:
-            if donut.count != 0:
+        if donut.count > 0:
+            if cart_item is None:
+                cart.add(donut)
+                donut.count -= 1
+                donut.save()
+            else:
                 donut.count -= 1
                 donut.save()
                 cart_item['quantity'] += 1
                 cart.save()
-            else:
-                messages.error(request, 'This donut is ended, please, take some other!')
+        else:
+            messages.error(request, 'This donut is ended, please, take some other!')
         return redirect(request.META.get('HTTP_REFERER', 'donut:donut_list'))
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -94,24 +94,16 @@ class RemoveFromCartView(SingleObjectMixin, View):
 
 
 def view_cart(request):
+    form = OrderCreate
     cart = Cart(request)
-    print("Cart contents:", cart.cart)
-    cart.clear()
-    print("Cart contents after clearing:", cart.cart)
     context = {
-        'cart':cart,
-        'key':settings.STRIPE_PUBLISHABLE_KEY,
+        'cart': cart,
+        'key': settings.STRIPE_PUBLISHABLE_KEY,
         'total_price': cart.get_total_price()*100,
+        'form': form
     }
     return render(request, 'donut/cart.html', context)
 
 
-class CreateOrderView(CreateView):
-    model = Order
-    form_class = OrderCreate
-    redirect_field_name = 'donut_app/cart'
-
-    def form_valid(self, form):
-        return super().form_valid(form)
 
 

@@ -33,12 +33,13 @@ class Order(models.Model):
     total_price = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    paid = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Order #{self.pk}"
 
     def get_absolute_url(self):
-        return reverse("order:order:detail", kwargs={'pk': self.pk})
+        return reverse("order:create_order")
 
 
 class OrderItem(models.Model):

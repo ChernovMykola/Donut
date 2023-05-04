@@ -70,7 +70,7 @@ nav.list-pages li a:hover {
 
 .popup{
     position: absolute;
-    top: 50%;
+    top: 30%;
     left: 50%;
     width: 500px;
     background: white;

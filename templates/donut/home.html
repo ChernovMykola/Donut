@@ -31,12 +31,10 @@
                         </div>
                     {% endif %}
                     <form action="{% url 'donut:add_to_cart' d.id %}" method="POST">
-                      {% csrf_token %}
-                      <input type="hidden" name="donut_id" value="{{ d.id }}">
-                      <button type="submit">Add to cart</button>
+                        {% csrf_token %}
+                        <input type="hidden" name="donut_id" value="{{ d.id }}">
+                        <button type="submit">Add to cart</button>
                     </form>
-
-
                 </div>
             {% block javascript %}
                 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
