@@ -7,7 +7,8 @@ from donut_app.forms import OrderCreate
 from django.conf import settings
 from django.shortcuts import render
 from django.views.generic import (
-    CreateView
+    CreateView,
+    FormView
 )
 import stripe
 
@@ -73,36 +74,72 @@ class Cart:
         return sum(item['quantity'] for item in self.cart.values())
 
 
-def charge(request):
-    if request.method == 'POST':
-        stripe_token = request.POST['stripeToken']
-        amount = Cart(request).get_total_price()
-        stripe.api_version = "2022-08-01"
-        try:
-            charge = stripe.Charge.create(
-                amount=int(amount * 100),
-                currency='usd',
-                description='Payment Gateway',
-                source=stripe_token
-            )
-        except stripe.error.CardError as e:
-            pass
-    Cart.clear()
-    Cart.save()
-    return render(request, 'home.html')
+# def charge(request):
+#     if request.method == 'POST':
+#         stripe_token = request.POST['stripeToken']
+#         amount = Cart(request).get_total_price()
+#         stripe.api_version = "2022-08-01"
+#         try:
+#             charge = stripe.Charge.create(
+#                 amount=int(amount * 100),
+#                 currency='usd',
+#                 description='Payment Gateway',
+#                 source=stripe_token
+#             )
+#         except stripe.error.CardError as e:
+#             pass
+#     Cart.clear()
+#     Cart.save()
+#     return render(request, 'home.html')
+#
+# class CreateOrderView(CreateView):
+#     model = Order
+#     form_class = OrderCreate
+#     # redirect_field_name = 'donut_app/donut_list'
+#     template_name = 'donut/cart.html'
+#
+#     def form_valid(self, form):
+#         cart = Cart(self.request)
+#         cart.clear()
+#         order = form.save()
+#         return super().form_valid(form)
+#
 
-class CreateOrderView(CreateView):
-    model = Order
-    form_class = OrderCreate
-    redirect_field_name = 'donut_app/donut_list'
+class CreateOrderView(FormView):
     template_name = 'donut/cart.html'
-
-    # def total_price(self):
-    #     total_price = Cart.get_total_price(self)
-    #     return total_price
+    form_class = OrderCreate
+    model = Order
+    success_url = 'donut:donut_list'
 
     def form_valid(self, form):
+        stripe_token = self.request.POST.get('stripeToken')
+        total_price = self.request.POST.get('total_price')
+
+        charge = stripe.Charge.create(
+            amount=int(total_price * 100),
+            currency='usd',
+            description='Payment Gateway',
+            source=stripe_token,
+        )
+
+        order = form.save()
+        # order.payment_id = charge.id
+        order.save()
         cart = Cart(self.request)
         cart.clear()
-        order = form.save()
+        cart.save()
+
         return super().form_valid(form)
+
+    def get_context_data(self):
+        cart = Cart(self.request)
+        form = OrderCreate
+        context = {
+            'cart': cart,
+            'key': settings.STRIPE_PUBLISHABLE_KEY,
+            'total_price': cart.get_total_price()*100,
+            'form': form
+        }
+        return context
+
+

@@ -27,17 +27,12 @@
                     </td>
                 </tr>
             {% endfor %}
-            <button class="open-popup">I want to by!</button>
 
-            <div class="popup-bg">
-                <div class="popup">
+            <div class="">
+                <div class="">
                     <form method="post" action="{% url 'order:create_order' %}?next={% url 'donut:donut_list' %}">
                         {% csrf_token %}
                         {{ form.as_p }}
-                        <button type="submit">Place Order</button>
-                    </form>
-                    <form id="stripe-form" action="{% url 'donut:cart' %}?next={% url 'donut:donut_list' %}" method="post">
-                        {% csrf_token %}
                         <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
                             data-key="{{ key }}"
                             data-description="Payment Gateway"
@@ -46,15 +41,9 @@
                         >
                         </script>
                     </form>
-                    <button class="close-popup">Close</button>
                 </div>
             </div>
 
-
-            {% block javascript %}
-                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                <script src="{% static 'js/script.js' %}"></script>
-            {% endblock %}
             <tr>
                 <td colspan="3">Total</td>
                 <td>{{ cart.get_total_price }}</td>

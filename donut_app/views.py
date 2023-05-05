@@ -93,16 +93,8 @@ class RemoveFromCartView(SingleObjectMixin, View):
             return redirect(reverse('donut:cart'))
 
 
-def view_cart(request):
-    form = OrderCreate
-    cart = Cart(request)
-    context = {
-        'cart': cart,
-        'key': settings.STRIPE_PUBLISHABLE_KEY,
-        'total_price': cart.get_total_price()*100,
-        'form': form
-    }
-    return render(request, 'donut/cart.html', context)
+
+
 
 
 
