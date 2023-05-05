@@ -3,7 +3,10 @@ from donut_app.models import (
     Donut,
     Order,
 )
-from donut_app.forms import OrderCreate
+from donut_app.forms import (
+    OrderCreate,
+    OrderItem
+)
 from django.conf import settings
 from django.shortcuts import render
 from django.views.generic import (
@@ -59,6 +62,19 @@ class Cart:
         context['total_price'] = cart.get_total_price()
         return context
 
+    def get_items(self):
+        donut_ids = self.cart.keys()
+        donuts = Donut.objects.filter(id__in=donut_ids)
+        items = []
+        for donut in donuts:
+            item = {
+                'name': donut.name,
+                'price': float(self.cart[str(donut.id)]['price']),
+                'quantity': self.cart[str(donut.id)]['quantity']
+            }
+            items.append(item)
+        return items
+
     def __iter__(self):
         donut_ids = self.cart.keys()
         donuts = Donut.objects.filter(id__in=donut_ids)
@@ -112,28 +128,51 @@ class CreateOrderView(FormView):
     success_url = 'donut:donut_list'
 
     def form_valid(self, form):
-        stripe_token = self.request.POST.get('stripeToken')
-        total_price = self.request.POST.get('total_price')
+        cart = Cart(self.request)
+        customer_name = form.cleaned_data['customer_name']
+        customer_email = form.cleaned_data['customer_email']
+        customer_address = form.cleaned_data['customer_address']
+        items = cart.get_items()
+        total_price = form.cleaned_data['total_price']
 
-        charge = stripe.Charge.create(
-            amount=int(total_price * 100),
-            currency='usd',
-            description='Payment Gateway',
-            source=stripe_token,
+        order = Order.objects.create(
+            customer_name=customer_name,
+            customer_email=customer_email,
+            customer_address=customer_address,
+            total_price=total_price
         )
 
-        order = form.save()
-        # order.payment_id = charge.id
-        order.save()
-        cart = Cart(self.request)
-        cart.clear()
-        cart.save()
+        for item in items:
+            OrderItem.objects.create(
+                order=order,
+                donut=item['product'],
+                quantity=item['quantity'],
+                price=item['price']
+            )
 
-        return super().form_valid(form)
+            stripe.api_key = settings.STRIPE_SECRET_KEY
+            stripe_token = self.request.POST.get('stripeToken')
 
-    def get_context_data(self):
+            try:
+                charge = stripe.Charge.create(
+                    amount=int(order.total_price * 100),
+                    currency='usd',
+                    description='Payment Gateway',
+                    source=stripe_token,
+                )
+                order.paid = True
+                order.save()
+                cart.clear()
+                print(order)
+                return super().form_valid(form)
+
+            except stripe.error.CardError as e:
+                error_msg = e.json_body['error']['message']
+                return render(self.request, 'donut/cart.html', {'error': error_msg})
+
+    def get_context_data(self, **kwargs):
         cart = Cart(self.request)
-        form = OrderCreate
+        form = OrderCreate()
         context = {
             'cart': cart,
             'key': settings.STRIPE_PUBLISHABLE_KEY,

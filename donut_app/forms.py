@@ -6,12 +6,23 @@ from donut_app.models import (
 )
 
 
+# class OrderCreate(forms.ModelForm):
+#     items = forms.ModelMultipleChoiceField(
+#         queryset=Donut.objects.all(),
+#         widget=forms.CheckboxSelectMultiple
+#     class Meta():
+#         model = Order
+#         fields = ('customer_name', 'customer_email', 'customer_address')
+#
+#         widgets = {
+#
+#         }
+
 class OrderCreate(forms.ModelForm):
-    class Meta():
+    # items = forms.ModelMultipleChoiceField(
+    #     queryset=Donut.objects.all(),
+    #     widget=forms.CheckboxSelectMultiple
+    # )
+    class Meta:
         model = Order
-
-        fields = ('customer_name', 'customer_email', 'customer_address', 'items')
-
-        widgets = {
-
-        }
+        fields = ['customer_name', 'customer_email', 'customer_address', 'items']
