@@ -30,7 +30,7 @@
                             {{ d.labels }}
                         </div>
                     {% endif %}
-                    <form action="{% url 'donut:add_to_cart' d.id %}" method="POST">
+                    <form action="{% url 'cart:add_to_cart' d.id %}" method="POST">
                         {% csrf_token %}
                         <input type="hidden" name="donut_id" value="{{ d.id }}">
                         <button type="submit">Add to cart</button>

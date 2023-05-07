@@ -6,22 +6,51 @@ from donut_app.forms import (
     OrderCreate,
     OrderItem
 )
+from cart_app import cart
 from django.conf import settings
 from django.shortcuts import render
 from django.views.generic import (
     CreateView,
     FormView
 )
+from django.shortcuts import (
+    render,
+    redirect
+)
+from django.views.generic import(
+    ListView,
+    DetailView,
+    TemplateView,
+    CreateView,
+
+)
+from django.core.paginator import Paginator
+from django.urls import reverse
+from django.views import View
+from django.views.generic.detail import SingleObjectMixin
+from donut_app.models import (
+    Donut,
+    Order,
+    OrderItem
+)
+from donut_app.forms import OrderCreate
+from django.contrib import messages
+from cart_app.cart import Cart
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+from cart_app import cart
 import stripe
-# Create your views here.
+
 class CreateOrderView(FormView):
     template_name = 'donut/cart.html'
     form_class = OrderCreate
     model = Order
     success_url = 'donut:donut_list'
+    cart = cart.Cart
 
     def form_valid(self, form):
-        cart = Cart(self.request)
+        cart = self.cart(self.request)
         customer_name = form.cleaned_data['customer_name']
         customer_email = form.cleaned_data['customer_email']
         customer_address = form.cleaned_data['customer_address']
@@ -64,7 +93,7 @@ class CreateOrderView(FormView):
                 return render(self.request, 'donut/cart.html', {'error': error_msg})
 
     def get_context_data(self, **kwargs):
-        cart = Cart(self.request)
+        cart = self.cart(self.request)
         form = OrderCreate()
         context = {
             'cart': cart,
@@ -73,3 +102,45 @@ class CreateOrderView(FormView):
             'form': form
         }
         return context
+
+class AddToCartView(SingleObjectMixin, View):
+    model = Donut
+
+    def post(self, request, *args, **kwargs):
+        donut = self.get_object()
+        cart = Cart(request)
+        cart_item = cart.get(donut.id)
+        if donut.count > 0:
+            if cart_item is None:
+                cart.add(donut)
+                donut.count -= 1
+                donut.save()
+            else:
+                donut.count -= 1
+                donut.save()
+                cart_item['quantity'] += 1
+                cart.save()
+        else:
+            messages.error(request, 'This donut is ended, please, take some other!')
+        return redirect(request.META.get('HTTP_REFERER', 'donut:donut_list'))
+
+@method_decorator(csrf_exempt, name='dispatch')
+class RemoveFromCartView(SingleObjectMixin, View):
+    model = Donut
+
+    def post(self, request, *args, **kwargs):
+        if request.method == 'POST':
+            donut = self.get_object()
+            cart = Cart(request)
+            cart_item = cart.get(donut.id)
+            if cart_item is not None:
+                if cart_item['quantity'] > 1:
+                    cart_item['quantity'] -= 1
+                    cart.save()
+                else:
+                    cart.remove(donut)
+                donut.count += 1
+                donut.save()
+            else:
+                messages.error(request, 'Add donut to your cart!')
+            return redirect(reverse('cart:cart'))

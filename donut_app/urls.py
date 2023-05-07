@@ -10,9 +10,5 @@ urlpatterns = [
 views.DonutListView.as_view(), name='donut_list'),
     path('<int:pk>/',
 views.DonutDetailView.as_view(), name='donut_detail'),
-    path('add_to_cart/<int:pk>/',
-views.AddToCartView.as_view(), name='add_to_cart'),
-    path('remove_from_cart/<int:pk>/',
-views.RemoveFromCartView.as_view(), name='remove_from_cart'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
