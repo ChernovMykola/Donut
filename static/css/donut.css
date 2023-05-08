@@ -54,9 +54,36 @@ nav.list-pages li a:hover {
     display: flex;
     justify-content: center;
 }
-.paginator{
-    display: flex;
-    justify-content: center;
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
 }
+
+.pagination li {
+  display: inline-block;
+  margin: 0 0.25rem;
+}
+
+.pagination li.active a {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.pagination li a {
+  color: #007bff;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  padding: 0.5rem 0.75rem;
+  text-decoration: none;
+}
+
+.pagination li a:hover {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
 
 

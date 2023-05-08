@@ -11,7 +11,17 @@ class DonutListView(ListView):
 
     def get_queryset(self):
         donut = Donut.objects.all().order_by('id')
+        label = self.request.GET.get('label')
+        if label:
+            donut = Donut.objects.filter(labels__contains=label).order_by('id')
         return donut
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        label = self.request.GET.get('label')
+        context['selected_label'] = label
+        return context
+
 
 
 class DonutDetailView(DetailView):
