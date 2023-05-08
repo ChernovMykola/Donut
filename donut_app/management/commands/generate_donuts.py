@@ -1,9 +1,11 @@
-from django.core.management.base import BaseCommand
-from donut_app.models import Donut
-from faker import Faker
-import random
 import os
+import random
+
 from django.conf import settings
+from django.core.management.base import BaseCommand
+from faker import Faker
+
+from donut_app.models import Donut
 
 
 class Command(BaseCommand):
@@ -57,7 +59,7 @@ class Command(BaseCommand):
             "Oreo with crumbled cookies and creamy filling",
             "Matcha green tea with a subtle earthy taste",
             "Tiramisu with layers of espresso-soaked ladyfingers",
-            "Vanilla bean with a rich, creamy flavor"
+            "Vanilla bean with a rich, creamy flavor",
         ]
 
         # Define a list of donut labels
@@ -87,7 +89,6 @@ class Command(BaseCommand):
                 ingredients=random.choice(ingredients),
                 allergens=random.choice(allergens),
                 price=random.choice(prices),
-                count=faker.random_int(min=0, max=100)
+                count=faker.random_int(min=0, max=100),
             )
             donut.save()
-

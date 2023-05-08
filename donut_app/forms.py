@@ -1,28 +1,15 @@
 from django import forms
-from donut_app.models import (
-    Donut,
-    Order,
-    OrderItem
-)
 
+from donut_app.models import Order
 
-# class OrderCreate(forms.ModelForm):
-#     items = forms.ModelMultipleChoiceField(
-#         queryset=Donut.objects.all(),
-#         widget=forms.CheckboxSelectMultiple
-#     class Meta():
-#         model = Order
-#         fields = ('customer_name', 'customer_email', 'customer_address')
-#
-#         widgets = {
-#
-#         }
 
 class OrderCreate(forms.ModelForm):
-    # items = forms.ModelMultipleChoiceField(
-    #     queryset=Donut.objects.all(),
-    #     widget=forms.CheckboxSelectMultiple
-    # )
+
     class Meta:
         model = Order
-        fields = ['customer_name', 'customer_email', 'customer_address', 'items']
+        fields = [
+            'customer_name',
+            'customer_email',
+            'customer_address',
+            'items',
+        ]

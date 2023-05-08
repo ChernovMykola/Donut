@@ -10,8 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
+
 import stripe
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,7 +25,9 @@ MEDIA_DIR = os.path.join(BASE_DIR, 'media/')
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-m$n=l9)4a_%m8$t+)$0ag89h$%6d71l*qbkr^lhk@!i(@^^_sk'
+SECRET_KEY = (
+    'django-insecure-m$n=l9)4a_%m8$t+)$0ag89h$%6d71l*qbkr^lhk@!i(@^^_sk'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -54,7 +57,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
 ]
 
 ROOT_URLCONF = 'Donut.urls'
@@ -89,7 +91,7 @@ DATABASES = {
         'NAME': 'donut',
         'USER': 'mykolachernov',
         'PASS': '/password',
-        'PORT': '5432'
+        'PORT': '5432',
     }
 }
 
@@ -141,6 +143,6 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-STRIPE_PUBLISHABLE_KEY='pk_test_51MduCcF9Kx6i6HNZQ8BLmdTNrW3Pbu9IhbcdHYk97YUDQgj8pe190o12GHX29giMSZOhp81NXxjYjT6K2oHdKthr00JIXDuJJn'
-STRIPE_SECRET_KEY='sk_test_51MduCcF9Kx6i6HNZQElaOxMxYLkOqmgnR7qRoQ5wqMNpiJ3zUtnbFjaiKw690OghvKtby5KsZri6sKkaXPU9NUef00aBlB2keV'
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51MduCcF9Kx6i6HNZQ8BLmdTNrW3Pbu9IhbcdHYk97YUDQgj8pe190o12GHX29giMSZOhp81NXxjYjT6K2oHdKthr00JIXDuJJn'
+STRIPE_SECRET_KEY = 'sk_test_51MduCcF9Kx6i6HNZQElaOxMxYLkOqmgnR7qRoQ5wqMNpiJ3zUtnbFjaiKw690OghvKtby5KsZri6sKkaXPU9NUef00aBlB2keV'
 CART_SESSION_ID = 'cart'

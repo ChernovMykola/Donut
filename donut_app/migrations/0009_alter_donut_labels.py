@@ -4,15 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('donut_app', '0008_alter_donut_allergens_alter_donut_description_and_more'),
+        (
+            'donut_app',
+            '0008_alter_donut_allergens_alter_donut_description_and_more',
+        ),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='donut',
             name='labels',
-            field=models.CharField(choices=[('GF', 'Gluten-Free'), ('BS', 'Basic')], max_length=2),
+            field=models.CharField(
+                choices=[('GF', 'Gluten-Free'), ('BS', 'Basic')], max_length=2
+            ),
         ),
     ]

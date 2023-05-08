@@ -1,46 +1,19 @@
-from donut_app.models import (
-    Donut,
-    Order,
-)
-from donut_app.forms import (
-    OrderCreate,
-    OrderItem
-)
-from cart_app import cart
-from django.conf import settings
-from django.shortcuts import render
-from django.views.generic import (
-    CreateView,
-    FormView
-)
-from django.shortcuts import (
-    render,
-    redirect
-)
-from django.views.generic import(
-    ListView,
-    DetailView,
-    TemplateView,
-    CreateView,
-
-)
-from django.core.paginator import Paginator
-from django.urls import reverse
-from django.views import View
-from django.views.generic.detail import SingleObjectMixin
-from donut_app.models import (
-    Donut,
-    Order,
-    OrderItem
-)
-from donut_app.forms import OrderCreate
-from django.contrib import messages
-from cart_app.cart import Cart
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
-from django.conf import settings
-from cart_app import cart
 import stripe
+from django.conf import settings
+from django.contrib import messages
+from django.shortcuts import redirect, render
+from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import FormView
+from django.views.generic.detail import SingleObjectMixin
+
+from cart_app import cart
+from cart_app.cart import Cart
+from donut_app.forms import OrderCreate
+from donut_app.models import Donut, Order, OrderItem
+
 
 class CreateOrderView(FormView):
     template_name = 'donut/cart.html'
@@ -61,7 +34,7 @@ class CreateOrderView(FormView):
             customer_name=customer_name,
             customer_email=customer_email,
             customer_address=customer_address,
-            total_price=total_price
+            total_price=total_price,
         )
 
         for item in items:
@@ -69,7 +42,7 @@ class CreateOrderView(FormView):
                 order=order,
                 donut=item['product'],
                 quantity=item['quantity'],
-                price=item['price']
+                price=item['price'],
             )
 
             stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -90,7 +63,9 @@ class CreateOrderView(FormView):
 
             except stripe.error.CardError as e:
                 error_msg = e.json_body['error']['message']
-                return render(self.request, 'donut/cart.html', {'error': error_msg})
+                return render(
+                    self.request, 'donut/cart.html', {'error': error_msg}
+                )
 
     def get_context_data(self, **kwargs):
         cart = self.cart(self.request)
@@ -98,10 +73,11 @@ class CreateOrderView(FormView):
         context = {
             'cart': cart,
             'key': settings.STRIPE_PUBLISHABLE_KEY,
-            'total_price': cart.get_total_price()*100,
-            'form': form
+            'total_price': cart.get_total_price() * 100,
+            'form': form,
         }
         return context
+
 
 class AddToCartView(SingleObjectMixin, View):
     model = Donut
@@ -121,8 +97,11 @@ class AddToCartView(SingleObjectMixin, View):
                 cart_item['quantity'] += 1
                 cart.save()
         else:
-            messages.error(request, 'This donut is ended, please, take some other!')
+            messages.error(
+                request, 'This donut is ended, please, take some other!'
+            )
         return redirect(request.META.get('HTTP_REFERER', 'donut:donut_list'))
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class RemoveFromCartView(SingleObjectMixin, View):

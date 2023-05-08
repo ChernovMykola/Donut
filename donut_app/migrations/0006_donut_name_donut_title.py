@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('donut_app', '0005_remove_donut_name_remove_donut_title'),
     ]
