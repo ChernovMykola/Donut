@@ -1,4 +1,6 @@
 import stripe
+import json
+import os
 from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect, render
@@ -38,34 +40,52 @@ class CreateOrderView(FormView):
         )
 
         for item in items:
-            OrderItem.objects.create(
+            order_items = OrderItem.objects.create(
                 order=order,
                 donut=item['product'],
                 quantity=item['quantity'],
                 price=item['price'],
             )
 
-            stripe.api_key = settings.STRIPE_SECRET_KEY
-            stripe_token = self.request.POST.get('stripeToken')
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        stripe_token = self.request.POST.get('stripeToken')
+
+        def create_checkout_session(order_items):
+            quantity = request.form.get('quantity', 1)
+            domain_url = os.getenv('DOMAIN')
 
             try:
-                charge = stripe.Charge.create(
-                    amount=int(order.total_price * 100),
-                    currency='usd',
-                    description='Payment Gateway',
-                    source=stripe_token,
+                checkout_session = stripe.checkout.Session.create(
+                    success_url=domain_url + '/success.html?session_id={CHECKOUT_SESSION_ID}',
+                    cancel_url=domain_url + '/canceled.html',
+                    mode='payment',
+                    line_items=[],
+                    for items in order_items:
+                        item_dict = {
+                            price_data : {items.donut.price},
+                            quantity : item.quantity
+                        }
+                        line_items.append(item_dict)
                 )
-                order.paid = True
-                order.save()
-                cart.clear()
-                print(order)
-                return super().form_valid(form)
+                return redirect(checkout_session.url, code=303)
+            except Exception as e:
+                return jsonify(error=str(e)), 403
 
-            except stripe.error.CardError as e:
-                error_msg = e.json_body['error']['message']
-                return render(
-                    self.request, 'donut/cart.html', {'error': error_msg}
-                )
+        @app.route('/webhook', methods=['POST'])
+        def webhook_received():
+            data = request_data['data']
+            event_type = request_data['type']
+            data_object = data['object']
+
+            print('event ' + event_type)
+
+            if event_type == 'checkout.session.completed':
+                print('🔔 Payment succeeded!')
+
+            return jsonify({'status': 'success'})
+
+
+
 
     def get_context_data(self, **kwargs):
         cart = self.cart(self.request)
