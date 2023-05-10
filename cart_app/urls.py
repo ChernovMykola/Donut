@@ -19,4 +19,14 @@ urlpatterns = [
         views.RemoveFromCartView.as_view(),
         name='remove_from_cart',
     ),
+    path(
+        'succes/',
+        views.SuccessView.as_view(),
+        name='success',
+    ),
+    path(
+        'cancel/',
+        views.CreateOrderView.as_view(),
+        name='cancel',
+    )
 ]

@@ -36,6 +36,11 @@ nav.list-pages li a:hover {
     margin: 10px;
 }
 
+.product-card in{
+    display: flex;
+    justify-content: center;
+}
+
 .donut_picture{
     display: flex;
     justify-content: center;

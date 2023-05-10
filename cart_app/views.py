@@ -1,14 +1,20 @@
 import stripe
-import json
-import os
 from django.conf import settings
 from django.contrib import messages
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
-from django.urls import reverse
+from django.urls import (
+    reverse,
+    reverse_lazy
+)
 from django.utils.decorators import method_decorator
+from django.db import transaction
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import FormView
+from django.views.generic import (
+    FormView,
+    TemplateView
+)
 from django.views.generic.detail import SingleObjectMixin
 
 from cart_app import cart
@@ -20,17 +26,16 @@ from donut_app.models import Donut, Order, OrderItem
 class CreateOrderView(FormView):
     template_name = 'donut/cart.html'
     form_class = OrderCreate
-    model = Order
-    success_url = 'donut:donut_list'
-    cart = cart.Cart
+    success_url = reverse_lazy('donut:donut_list')
 
+    @transaction.atomic
     def form_valid(self, form):
-        cart = self.cart(self.request)
+        cart_obj = cart.Cart(self.request)
         customer_name = form.cleaned_data['customer_name']
         customer_email = form.cleaned_data['customer_email']
         customer_address = form.cleaned_data['customer_address']
-        items = cart.get_items()
-        total_price = cart.get_total_price(self)
+        items = cart_obj.get_items()
+        total_price = (cart_obj.get_total_price(self))
 
         order = Order.objects.create(
             customer_name=customer_name,
@@ -40,7 +45,7 @@ class CreateOrderView(FormView):
         )
 
         for item in items:
-            order_items = OrderItem.objects.create(
+            OrderItem.objects.create(
                 order=order,
                 donut=item['product'],
                 quantity=item['quantity'],
@@ -50,41 +55,28 @@ class CreateOrderView(FormView):
         stripe.api_key = settings.STRIPE_SECRET_KEY
         stripe_token = self.request.POST.get('stripeToken')
 
-        def create_checkout_session(order_items):
-            quantity = request.form.get('quantity', 1)
-            domain_url = os.getenv('DOMAIN')
+        line_items = []
+        for item in items:
+            item_dict = {
+                'price_data': {
+                    'currency': 'usd',
+                    'unit_amount': int(item['price'] * 100),
+                },
+                'quantity': item['quantity'],
+            }
+            line_items.append(item_dict)
 
-            try:
-                checkout_session = stripe.checkout.Session.create(
-                    success_url=domain_url + '/success.html?session_id={CHECKOUT_SESSION_ID}',
-                    cancel_url=domain_url + '/canceled.html',
-                    mode='payment',
-                    line_items=[],
-                    for items in order_items:
-                        item_dict = {
-                            price_data : {items.donut.price},
-                            quantity : item.quantity
-                        }
-                        line_items.append(item_dict)
-                )
-                return redirect(checkout_session.url, code=303)
-            except Exception as e:
-                return jsonify(error=str(e)), 403
+        checkout_session = stripe.checkout.Session.create(
+            success_url=reverse('order:success'),
+            cancel_url=reverse('order:cancel'),
+            mode='payment',
+            line_items=line_items,
+        )
 
-        @app.route('/webhook', methods=['POST'])
-        def webhook_received():
-            data = request_data['data']
-            event_type = request_data['type']
-            data_object = data['object']
+        return HttpResponseRedirect(checkout_session.url)
 
-            print('event ' + event_type)
-
-            if event_type == 'checkout.session.completed':
-                print('🔔 Payment succeeded!')
-
-            return jsonify({'status': 'success'})
-
-
+class SuccessView(TemplateView):
+    template_name = 'success.html'
 
 
     def get_context_data(self, **kwargs):
