@@ -47,6 +47,7 @@ class OrderItem(models.Model):
     order = models.ForeignKey('Order', on_delete=models.CASCADE)
     donut = models.ForeignKey('Donut', on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
+    price = Donut.price
 
     def __str__(self):
         return (

@@ -13,14 +13,18 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import (
     FormView,
-    TemplateView
+    TemplateView,
 )
 from django.views.generic.detail import SingleObjectMixin
 
 from cart_app import cart
 from cart_app.cart import Cart
 from donut_app.forms import OrderCreate
-from donut_app.models import Donut, Order, OrderItem
+from donut_app.models import (
+    Donut,
+    Order,
+    OrderItem
+)
 
 
 class CreateOrderView(FormView):
@@ -42,6 +46,7 @@ class CreateOrderView(FormView):
             customer_email=customer_email,
             customer_address=customer_address,
             total_price=total_price,
+            items=items,
         )
 
         for item in items:
@@ -53,6 +58,7 @@ class CreateOrderView(FormView):
             )
 
         stripe.api_key = settings.STRIPE_SECRET_KEY
+        stripe.publishable_key = settings.STRIPE_PUBLISHABLE_KEY
         stripe_token = self.request.POST.get('stripeToken')
 
         line_items = []
@@ -77,15 +83,21 @@ class CreateOrderView(FormView):
 
 class SuccessView(TemplateView):
     template_name = 'success.html'
+    def success(self):
+        Order.paid = True
+        Order.save(self)
 
 
+
+class CartView(TemplateView):
+    template_name = 'donut/cart.html'
     def get_context_data(self, **kwargs):
-        cart = self.cart(self.request)
+        cart_obj = cart.Cart(self.request)
         form = OrderCreate()
         context = {
-            'cart': cart,
+            'cart': cart_obj,
             'key': settings.STRIPE_PUBLISHABLE_KEY,
-            'total_price': cart.get_total_price() * 100,
+            'total_price': cart_obj.get_total_price() * 100,
             'form': form,
         }
         return context
