@@ -1,54 +1,60 @@
 {% extends 'donut/base.html' %}
 {% block content %}
 {% load static %}
-     <h1>Shopping Cart</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Product Name</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in cart %}
-                <tr>
-                    <td>{{ item.donut.name }}</td>
-                    <td>{{ item.price }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>{{ item.total_price }}</td>
-                    <td>
-                        <form action="{% url 'cart:remove_from_cart' item.donut.id %}" method="POST">
-                            {% csrf_token %}
-                            <input type="hidden" name="method" value="DELETE">
-                            <button type="submit">Remove</button>
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
+    <div class="container">
+        <div class="cart">
+            <h1>Shopping Cart</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart %}
+                        <tr>
+                            <td>{{ item.donut.name }}</td>
+                            <td>{{ item.price }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.total_price }}</td>
+                            <td>
+                                <form action="{% url 'cart:remove_from_cart' item.donut.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="method" value="DELETE">
+                                    <button type="submit">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
 
-            <div class="">
-                <div class="">
-                    <form method="post" action="{% url 'order:create_order' %}?next={% url 'donut:donut_list' %}">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                            data-key="{{ key }}"
-                            data-description="Payment Gateway"
-                            data-amount="{{ total_price }}"
-                            data-local="auto"
-                        >
-                        </script>
-                    </form>
-                </div>
-            </div>
+                    <div class="">
+                        <div class="payform">
+                            <form method="post" action="{% url 'order:cart' %}?next={% url 'donut:donut_list' %}">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <div class="stripe-button-container">
+                                    <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                                        data-key="{{ key }}"
+                                        data-description="Payment Gateway"
+                                        data-amount="{{ total_price }}"
+                                        data-local="auto"
+                                    >
+                                    </script>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
 
-            <tr>
-                <td colspan="3">Total</td>
-                <td>{{ cart.get_total_price }}</td>
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
+                    <tr>
+                        <td colspan="3">Total</td>
+                        <td>{{ cart.get_total_price }}</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}

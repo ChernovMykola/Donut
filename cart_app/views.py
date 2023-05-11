@@ -2,7 +2,10 @@ import stripe
 from django.conf import settings
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.shortcuts import (
+    redirect,
+    render
+)
 from django.urls import (
     reverse,
     reverse_lazy
@@ -16,7 +19,6 @@ from django.views.generic import (
     TemplateView,
 )
 from django.views.generic.detail import SingleObjectMixin
-
 from cart_app import cart
 from cart_app.cart import Cart
 from donut_app.forms import OrderCreate
@@ -32,6 +34,17 @@ class CreateOrderView(FormView):
     form_class = OrderCreate
     success_url = reverse_lazy('donut:donut_list')
 
+    def get_context_data(self, **kwargs):
+        cart_obj = cart.Cart(self.request)
+        form = OrderCreate()
+        context = {
+            'cart': cart_obj,
+            'key': settings.STRIPE_PUBLISHABLE_KEY,
+            'total_price': cart_obj.get_total_price() * 100,
+            'form': form,
+        }
+        return context
+
     @transaction.atomic
     def form_valid(self, form):
         cart_obj = cart.Cart(self.request)
@@ -40,6 +53,7 @@ class CreateOrderView(FormView):
         customer_address = form.cleaned_data['customer_address']
         items = cart_obj.get_items()
         total_price = (cart_obj.get_total_price(self))
+        session_id = self.request.session.session_key
 
         order = Order.objects.create(
             customer_name=customer_name,
@@ -47,7 +61,9 @@ class CreateOrderView(FormView):
             customer_address=customer_address,
             total_price=total_price,
             items=items,
+            session_id=session_id,
         )
+        order.save()
 
         for item in items:
             OrderItem.objects.create(
@@ -82,25 +98,28 @@ class CreateOrderView(FormView):
         return HttpResponseRedirect(checkout_session.url)
 
 class SuccessView(TemplateView):
-    template_name = 'success.html'
+    template_name = 'donut/success.html'
+
     def success(self):
-        Order.paid = True
-        Order.save(self)
+        session_id = self.request.GET.get('session_id')
+        order = Order.objects.get(session_id=session_id)
+        order.paid = True
+        order.save()
 
 
 
-class CartView(TemplateView):
-    template_name = 'donut/cart.html'
-    def get_context_data(self, **kwargs):
-        cart_obj = cart.Cart(self.request)
-        form = OrderCreate()
-        context = {
-            'cart': cart_obj,
-            'key': settings.STRIPE_PUBLISHABLE_KEY,
-            'total_price': cart_obj.get_total_price() * 100,
-            'form': form,
-        }
-        return context
+# class CartView(TemplateView):
+#     template_name = 'donut/cart.html'
+#     def get_context_data(self, **kwargs):
+#         cart_obj = cart.Cart(self.request)
+#         form = OrderCreate()
+#         context = {
+#             'cart': cart_obj,
+#             'key': settings.STRIPE_PUBLISHABLE_KEY,
+#             'total_price': cart_obj.get_total_price() * 100,
+#             'form': form,
+#         }
+#         return context
 
 
 class AddToCartView(SingleObjectMixin, View):

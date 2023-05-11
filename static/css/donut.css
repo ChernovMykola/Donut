@@ -1,46 +1,3 @@
-nav.list-pages {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-nav.list-pages ul {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
-nav.list-pages li {
-    padding: 5px 10px;
-    background-color: #eee;
-    border-radius: 5px;
-}
-
-nav.list-pages li.active a {
-    background-color: #007bff;
-    color: #fff;
-}
-
-nav.list-pages li a {
-    color: #007bff;
-    text-decoration: none;
-}
-
-nav.list-pages li a:hover {
-    text-decoration: underline;
-}
-
-.product-card{
-    margin: 10px;
-}
-
-.product-card in{
-    display: flex;
-    justify-content: center;
-}
-
 .donut_picture{
     display: flex;
     justify-content: center;
@@ -49,16 +6,12 @@ nav.list-pages li a:hover {
 .donut_picture{
     height: 10em;
     width: 10em;
-    margin: 1em;
-}
-.massages{
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2em;
 
 }
 
-.error{
-    display: flex;
-    justify-content: center;
-}
 .pagination {
   display: flex;
   justify-content: center;
@@ -71,24 +24,184 @@ nav.list-pages li a:hover {
 }
 
 .pagination li.active a {
-  background-color: #007bff;
-  border-color: #007bff;
+  background-color: #FFFFE0;
+  border-color: #FFFFE0;
+  color: #FF4500;
 }
 
 .pagination li a {
-  color: #007bff;
-  background-color: #fff;
-  border: 1px solid #dee2e6;
+  color: #FFFFE0;
+  background-color: #FF4500;
+  border: 1px solid #FF4500;
   padding: 0.5rem 0.75rem;
   text-decoration: none;
 }
 
 .pagination li a:hover {
-  background-color: #007bff;
-  border-color: #007bff;
-  color: #fff;
+  background-color: #FF4500;
+  border-color: #FF4500;
+  color: #FF7F50;
   cursor: pointer;
 }
+
+.labelform{
+  display: flex;
+  justify-content: center;
+}
+
+form {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+select {
+  margin-right: 10px;
+}
+button[type="submit"] {
+  background-color: #FF4500;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+button[type="submit"]:hover {
+  background-color: #FF7F50;
+}
+
+ul.messages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+ul.messages li {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+ul.messages li.error {
+  background-color: #f2dede;
+  border: 1px solid #ebccd1;
+  color: #a94442;
+}
+ul.messages a.close {
+  float: right;
+  color: #333;
+  text-decoration: none;
+}
+ul.messages a.close:hover {
+  color: #000;
+}
+
+.product-card {
+  background: #FFFFE0;
+  border: 1px solid #FF7F50;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+a{
+  text-decoration: none;
+  color: #FF4500;
+}
+
+.product-card.title-decor{
+  display: flex;
+  justify-content: center;
+}
+
+div.product-card.num {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: none;
+}
+
+.product-card.num .donut-count {
+  color: #888;
+}
+.product-card form {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+.product-card button[type="submit"] {
+  background-color: #FF4500;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.product-card button[type="submit"]:hover {
+  background-color: #FF4500;
+  display: flex;
+}
+
+body{
+  background: #FFA07A;
+}
+
+.container {
+  margin-top: 30px;
+}
+
+.cart {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #FFFFE0;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.cart h1 {
+  text-align: center;
+  font-size: 36px;
+  margin-bottom: 30px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+tfoot td {
+  text-align: right;
+  font-weight: bold;
+}
+
+.stripe-button-el {
+  display: block;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.stripe-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.payform{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.stripe-button-el span {
+  background-color: #FF4500 !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
 
 
 
