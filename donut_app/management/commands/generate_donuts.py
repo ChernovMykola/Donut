@@ -7,7 +7,6 @@ from faker import Faker
 
 from donut_app.models import Donut
 
-
 class Command(BaseCommand):
     help = 'Generates 200 fake Donut objects'
 
@@ -15,7 +14,7 @@ class Command(BaseCommand):
         faker = Faker()
         pictures_dir = os.path.join(settings.MEDIA_DIR)
         picture_files = os.listdir(pictures_dir)
-        picture_files = random.sample(picture_files, 19)
+        picture_files = random.sample(picture_files, 17)
         donut_names = [
             'Glazed',
             'Chocolate Sprinkles',

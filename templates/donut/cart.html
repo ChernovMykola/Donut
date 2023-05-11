@@ -35,15 +35,7 @@
                             <form method="post" action="{% url 'order:cart' %}?next={% url 'donut:donut_list' %}">
                                 {% csrf_token %}
                                 {{ form.as_p }}
-                                <div class="stripe-button-container">
-                                    <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                                        data-key="{{ key }}"
-                                        data-description="Payment Gateway"
-                                        data-amount="{{ total_price }}"
-                                        data-local="auto"
-                                    >
-                                    </script>
-                                </div>
+                                <button type="submit">Submit</button>
                             </form>
                         </div>
                     </div>

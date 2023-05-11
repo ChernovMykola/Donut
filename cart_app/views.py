@@ -1,7 +1,10 @@
 import stripe
 from django.conf import settings
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import (
+    HttpResponseRedirect,
+    HttpResponse
+)
 from django.shortcuts import (
     redirect,
     render
@@ -28,7 +31,6 @@ from donut_app.models import (
     OrderItem
 )
 
-
 class CreateOrderView(FormView):
     template_name = 'donut/cart.html'
     form_class = OrderCreate
@@ -52,25 +54,23 @@ class CreateOrderView(FormView):
         customer_email = form.cleaned_data['customer_email']
         customer_address = form.cleaned_data['customer_address']
         items = cart_obj.get_items()
-        total_price = (cart_obj.get_total_price(self))
-        session_id = self.request.session.session_key
+        total_price = cart_obj.get_total_price()
 
         order = Order.objects.create(
             customer_name=customer_name,
             customer_email=customer_email,
             customer_address=customer_address,
             total_price=total_price,
-            items=items,
-            session_id=session_id,
         )
-        order.save()
+        # order.items.set(Donut.objects.filter(id__in=[item['id'] for item in items]))
 
         for item in items:
+            donut = Donut.objects.get(id=item['id'])
             OrderItem.objects.create(
                 order=order,
-                donut=item['product'],
+                donut=donut,
                 quantity=item['quantity'],
-                price=item['price'],
+                # price=item['price'],
             )
 
         stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -82,6 +82,9 @@ class CreateOrderView(FormView):
             item_dict = {
                 'price_data': {
                     'currency': 'usd',
+                    'product_data': {
+                        'name': item['name']
+                    },
                     'unit_amount': int(item['price'] * 100),
                 },
                 'quantity': item['quantity'],
@@ -89,22 +92,30 @@ class CreateOrderView(FormView):
             line_items.append(item_dict)
 
         checkout_session = stripe.checkout.Session.create(
-            success_url=reverse('order:success'),
-            cancel_url=reverse('order:cancel'),
+            success_url='http://localhost:8000/success/?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url=f'http://localhost:8000{reverse("order:cancel")}',
             mode='payment',
             line_items=line_items,
         )
-
+        order.session_id = checkout_session.id
+        order.save()
+        print(order.session_id)
         return HttpResponseRedirect(checkout_session.url)
 
-class SuccessView(TemplateView):
-    template_name = 'donut/success.html'
 
-    def success(self):
-        session_id = self.request.GET.get('session_id')
+class SuccessView(View):
+
+    def get(self, request, *args, **kwargs):
+        session_id = request.GET.get('session_id')
         order = Order.objects.get(session_id=session_id)
         order.paid = True
         order.save()
+        return redirect('order:thank_you')
+
+
+class ThankView(TemplateView):
+    template_name = 'donut/success.html'
+
 
 
 

@@ -1,8 +1,6 @@
-from decimal import Decimal
-
 import stripe
+from decimal import Decimal
 from django.conf import settings
-
 from donut_app.models import Donut
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -63,12 +61,14 @@ class Cart:
                 'name': donut.name,
                 'price': float(self.cart[str(donut.id)]['price']),
                 'quantity': self.cart[str(donut.id)]['quantity'],
+                'id': donut.id,
             }
             items.append(item)
         return items
 
     def __iter__(self):
         donut_ids = self.cart.keys()
+        print(donut_ids)
         donuts = Donut.objects.filter(id__in=donut_ids)
         for donut in donuts:
             self.cart[str(donut.id)]['donut'] = donut
