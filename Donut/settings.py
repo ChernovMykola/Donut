@@ -88,9 +88,10 @@ WSGI_APPLICATION = 'Donut.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'donut',
+        'NAME': 'donut_nsje',
         'USER': 'mykolachernov',
-        'PASS': '/password',
+        'PASSWORD': 'OpQyfncqc2MdM7W7NgPaPR7e06ItEqz8',
+        'HOST': 'dpg-chf2vue4dad1jqdqop4g-a.oregon-postgres.render.com',
         'PORT': '5432',
     }
 }
