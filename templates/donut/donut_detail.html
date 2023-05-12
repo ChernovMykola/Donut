@@ -7,20 +7,34 @@
         </div>
         <h3>{{ donut.title }}</h3>
         <p>{{ donut.description }}</p>
+
         <div>
-            <p>{{ donut.price }}</p>
-            <p>{{ donut.count }}</p>
+            <p>Donut ingredients:{{ donut.ingredients }}</p>
         </div>
+
+        <div>
+            <p>Price:{{ donut.price }}</p>
+            <p>Count:{{ donut.count }}</p>
+        </div>
+
         {% if donut.labels %}
             <div>
                 {{ donut.labels }}
             </div>
         {% endif %}
+
+        {% if donut.allergens %}
+            <div>
+                <p>Allergents:{{ donut.allergens }}</p>
+            </div>
+        {% endif %}
+
         <form action="{% url 'cart:add_to_cart' donut.id %}" method="POST">
           {% csrf_token %}
           <input type="hidden" name="donut_id" value="{{ d.id }}">
           <button type="submit">Add to cart</button>
         </form>
+
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
@@ -31,10 +45,12 @@
                 {% endfor %}
             </ul>
         {% endif %}
+
         {% block javascript %}
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             <script src="{% static 'js/script.js' %}"></script>
         {% endblock %}
+
     </div>
 
 {% endblock %}
