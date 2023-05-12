@@ -1,13 +1,14 @@
+import os
+import smtplib
+from email.mime.text import MIMEText
 import stripe
 from django.conf import settings
 from django.contrib import messages
 from django.http import (
-    HttpResponseRedirect,
-    HttpResponse
+    HttpResponseRedirect
 )
 from django.shortcuts import (
     redirect,
-    render
 )
 from django.urls import (
     reverse,
@@ -70,7 +71,6 @@ class CreateOrderView(FormView):
                 order=order,
                 donut=donut,
                 quantity=item['quantity'],
-                # price=item['price'],
             )
 
         stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -99,7 +99,8 @@ class CreateOrderView(FormView):
         )
         order.session_id = checkout_session.id
         order.save()
-        print(order.session_id)
+        cart.Cart.clear(self.request)
+        cart.Cart.save(self.request)
         return HttpResponseRedirect(checkout_session.url)
 
 
@@ -110,27 +111,32 @@ class SuccessView(View):
         order = Order.objects.get(session_id=session_id)
         order.paid = True
         order.save()
+
+        sender = 'DonutEcc@gmail.com'
+        password = os.getenv("EMAIL_PASSWORD")
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+
+        try:
+            server.login(sender,password)
+            msg_text = f"Thank you for your order, {order.customer_name}!\n\n"
+            msg_text += "Here is a summary of your order:\n\n"
+            for item in order.orderitem_set.all():
+                msg_text += f"- {item.donut.name} x {item.quantity}: ${item.donut.price * item.quantity:.2f}\n"
+            msg_text += f"\nTotal price: ${order.total_price:.2f}\n"
+            msg_text += "\nSee you!\n"
+            msg = MIMEText(msg_text)
+            msg["Subject"] = "ORDER!"
+            server.sendmail(sender, order.customer_email, msg.as_string())
+        except Exception as _ex:
+            return f"{_ex}\nProblems with your order!"
+
         return redirect('order:thank_you')
 
 
 class ThankView(TemplateView):
     template_name = 'donut/success.html'
 
-
-
-
-# class CartView(TemplateView):
-#     template_name = 'donut/cart.html'
-#     def get_context_data(self, **kwargs):
-#         cart_obj = cart.Cart(self.request)
-#         form = OrderCreate()
-#         context = {
-#             'cart': cart_obj,
-#             'key': settings.STRIPE_PUBLISHABLE_KEY,
-#             'total_price': cart_obj.get_total_price() * 100,
-#             'form': form,
-#         }
-#         return context
 
 
 class AddToCartView(SingleObjectMixin, View):
