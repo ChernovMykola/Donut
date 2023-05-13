@@ -94,17 +94,22 @@ WSGI_APPLICATION = 'Donut.wsgi.application'
 #         'PORT': '5432',
 #     }
 # }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'donut_nsje',
+#         'USER': 'mykolachernov',
+#         'PASSWORD': 'OpQyfncqc2MdM7W7NgPaPR7e06ItEqz8',
+#         'HOST': 'dpg-chf2vue4dad1jqdqop4g-a.oregon-postgres.render.com',
+#         'PORT': '5432',
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'donut_nsje',
-        'USER': 'mykolachernov',
-        'PASSWORD': 'OpQyfncqc2MdM7W7NgPaPR7e06ItEqz8',
-        'HOST': 'dpg-chf2vue4dad1jqdqop4g-a.oregon-postgres.render.com',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
