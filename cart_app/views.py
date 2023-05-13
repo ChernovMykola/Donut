@@ -92,8 +92,8 @@ class CreateOrderView(FormView):
             line_items.append(item_dict)
 
         checkout_session = stripe.checkout.Session.create(
-            success_url='http://localhost:8000/success/?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url=f'http://localhost:8000{reverse("order:cancel")}',
+            success_url='http://daniilchernov.pythonanywhere.com/success/?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url=f'http://daniilchernov.pythonanywhere.com/{reverse("order:cancel")}',
             mode='payment',
             line_items=line_items,
         )
